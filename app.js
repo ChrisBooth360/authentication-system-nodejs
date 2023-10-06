@@ -7,7 +7,12 @@ const authRoutes = require('./routes/authRoutes');
 const passportConfig = require('./passport');
 
 // Creates an Express application
-const app = express(); 
+const app = express();
+
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+// Defining the directory where EJS templates are located
+app.set('views', __dirname + '/views');
 
 // Parsing incoming JSON data
 app.use(express.json());
