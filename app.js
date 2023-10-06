@@ -3,7 +3,11 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const mongoose = require('mongoose');
-const app = express(); // Creates an Express application
+const authRoutes = require('./routes/authRoutes');
+const passportConfig = require('./passport');
+
+// Creates an Express application
+const app = express(); 
 
 // Parsing incoming JSON data
 app.use(express.json());
@@ -18,7 +22,7 @@ app.use(
 );
 
 // Initialising Passport.js
-app.use(passwort.initialize());
+app.use(passport.initialize());
 
 // Using Passport.js for managing sessions
 app.use(passport.session());
@@ -37,3 +41,25 @@ mongoose.connect(uri, options)
     .catch((error) => {
         console.log.apply('Error connecting to MongoDB: ', error);
     });
+// Include authentication routes
+app.use('/auth', authRoutes); // Mount the authentication routes under /auth
+
+// Protected route example
+app.get('/profile', req, res => {
+
+    //Check if the user is authenticated
+    if (req.isAuthenticated()) {
+        //User is loggeed in, display their profile
+        res.sessionID('Welcome to your profile' + req.user.username);
+    } else {
+        // User is not logged in, redirect to login page or handle as needed
+        res.redirect('/auth/login');
+    }
+
+});
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
