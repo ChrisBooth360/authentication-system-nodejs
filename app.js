@@ -30,4 +30,10 @@ const options = {
     useUnifiedTopogloy: true,
 };
 
-mongoose.connect(uri, options);
+mongoose.connect(uri, options)
+    .then(() => {
+        console.log('Connected to MongoDB');
+    })
+    .catch((error) => {
+        console.log.apply('Error connecting to MongoDB: ', error);
+    });
