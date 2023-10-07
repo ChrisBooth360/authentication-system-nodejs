@@ -1,3 +1,4 @@
+// models/User.js
 // Importing mongoose module
 const mongoose = require('mongoose');
 
