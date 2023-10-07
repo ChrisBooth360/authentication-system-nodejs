@@ -1,10 +1,10 @@
+// app.js
 // Importing required models
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
-const passportConfig = require('./passport');
 
 // Creates an Express application
 const app = express();
@@ -33,9 +33,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to MongoDB (replace 'your-mongodb-uri' with your MongoDB connection string)
-const uri = 'your-mongo-uri'
+const uri = 'mongodb+srv://Cluster00121:WGlCU1BJcVxT@cluster00121.iowqabj.mongodb.net/testdb'
 const options = {
-    useNewParser: true,
+    useNewUrlParser: true,
     useUnifiedTopogloy: true,
 };
 
@@ -49,13 +49,18 @@ mongoose.connect(uri, options)
 // Include authentication routes
 app.use('/auth', authRoutes); // Mount the authentication routes under /auth
 
+app.get('/', (req, res) => {
+    // Your route handling code here
+    res.send('Welcome to the homepage');
+  });
+
 // Protected route example
-app.get('/profile', req, res => {
+app.get('/profile', (req, res) => {
 
     //Check if the user is authenticated
     if (req.isAuthenticated()) {
         //User is loggeed in, display their profile
-        res.sessionID('Welcome to your profile' + req.user.username);
+        res.send('Welcome to your profile' + req.user.username);
     } else {
         // User is not logged in, redirect to login page or handle as needed
         res.redirect('/auth/login');

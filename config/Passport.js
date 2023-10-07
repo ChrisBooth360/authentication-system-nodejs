@@ -1,7 +1,9 @@
+// config/Passport.js
 // Importing necessary modules
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
 
 // Configure Passport to use a local strategy for athentication
 passport.use(new LocalStrategy((username, password, done) => {
@@ -14,13 +16,18 @@ passport.use(new LocalStrategy((username, password, done) => {
             return done(null, false, { message: 'Incorrect username.' });
         }
 
-        // Check if the provided password matches the stored hased password
-        if (user.password !== password) {
-            return done(null, false, { message: 'Incorrect password.'});
-        }
+        //Compare the provided password with the hashed password
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) { return done(err);} 
+            
+            if (!isMatch){
+                return done(null, false, { message: 'Incorrect password.'});
+            }
+            // If everything is fine, return the user object
+            return done(null, user);
+        });
 
-        // If everything is fine, return the user object
-        return done(null, user);
+        
     });
 }));
 
